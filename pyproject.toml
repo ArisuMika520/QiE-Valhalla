@@ -1,0 +1,10 @@
+[project]
+name = "qq-valhalla"
+version = "0.1.0"
+description = "QiE 群管理数据本地采集与归档工具"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
