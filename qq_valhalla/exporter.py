@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -9,10 +10,25 @@ from .storage import ArchiveStore, clean_text
 
 
 RETENTION_RUNS = 5
+ARCHIVE_DISPLAY_TZ = timezone(timedelta(hours=8))
 
 
 def pretty_json_dumps(data: Any) -> str:
     return json.dumps(data, ensure_ascii=False, indent=2, sort_keys=False)
+
+
+def format_archive_time(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    normalized_text = text[:-1] + "+00:00" if text.endswith("Z") else text
+    try:
+        parsed = datetime.fromisoformat(normalized_text)
+    except ValueError:
+        return text
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=UTC)
+    return parsed.astimezone(ARCHIVE_DISPLAY_TZ).isoformat(timespec="seconds")
 
 
 def group_avatar_url(group_id: str) -> str:
@@ -118,6 +134,8 @@ def build_run_payload(store: ArchiveStore, run_id: int) -> dict[str, Any]:
             }
         )
 
+    latest_archive_time = run["finished_at"] or run["started_at"]
+
     return {
         "run": {
             "id": int(run["id"]),
@@ -126,7 +144,7 @@ def build_run_payload(store: ArchiveStore, run_id: int) -> dict[str, Any]:
             "status": run["status"],
             "metadata": json.loads(run["metadata_json"] or "{}"),
         },
-        "latest_archive_time": run["finished_at"] or run["started_at"],
+        "latest_archive_time": format_archive_time(latest_archive_time),
         "group_count": len(groups),
         "member_count": sum(len(group["members"]) for group in groups),
         "groups": groups,
