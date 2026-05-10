@@ -10,6 +10,17 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(parse_group_ids("123, 456;123 789"), ["123", "456", "789"])
         self.assertEqual(parse_group_ids(""), [])
 
+    def test_default_poll_seconds_is_daily(self):
+        with TemporaryDirectory() as temp_dir:
+            env = Path(temp_dir) / ".env"
+            env.write_text(
+                'QQ_VALHALLA_COOKIE="skey=abc; p_skey=def; p_uin=o1"\n'
+                'QQ_VALHALLA_GROUP_IDS="100"\n',
+                encoding="utf-8",
+            )
+            settings = Settings.from_env(env)
+            self.assertEqual(settings.poll_seconds, 86400)
+
     def test_accept_language_from_env_file(self):
         with TemporaryDirectory() as temp_dir:
             env = Path(temp_dir) / ".env"

@@ -8,6 +8,8 @@ QiE Valhalla 是一个本地运行的 QiE 群管理数据采集归档工具，�
 
 ## PM2 进程管理
 
+归档轮询间隔由 `.env` 中的 `QQ_VALHALLA_POLL_SECONDS` 控制，当前建议值为 `86400`，即 24 小时归档一次。
+
 常用命令：
 
 ```bash

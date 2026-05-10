@@ -56,7 +56,7 @@ class Settings:
             archive_dir=PROJECT_ROOT / os.environ.get("QQ_VALHALLA_ARCHIVE_DIR", "archive"),
             timeout=float(os.environ.get("QQ_VALHALLA_TIMEOUT", "15")),
             page_size=int(os.environ.get("QQ_VALHALLA_PAGE_SIZE", "40")),
-            poll_seconds=int(os.environ.get("QQ_VALHALLA_POLL_SECONDS", "300")),
+            poll_seconds=int(os.environ.get("QQ_VALHALLA_POLL_SECONDS", "86400")),
             user_agent=os.environ.get(
                 "QQ_VALHALLA_USER_AGENT",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
